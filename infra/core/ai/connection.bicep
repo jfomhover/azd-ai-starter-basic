@@ -39,7 +39,7 @@ param apiKey string = ''
 
 
 // Get reference to the AI Services account and project
-resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
   name: aiServicesAccountName
 
   resource project 'projects' existing = {
@@ -48,7 +48,7 @@ resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' exi
 }
 
 // Create the connection
-resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = {
+resource connection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = {
   parent: aiAccount::project
   name: connectionConfig.name
   properties: {

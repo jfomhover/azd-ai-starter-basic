@@ -73,7 +73,7 @@ module applicationInsights '../monitor/applicationinsights.bicep' = if (enableMo
 
 // Always create a new AI Account for now (simplified approach)
 // TODO: Add support for existing accounts in a future version
-resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
+resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' = {
   name: !empty(existingAiAccountName) ? existingAiAccountName : 'ai-account-${resourceToken}'
   location: location
   tags: tags
@@ -97,7 +97,7 @@ resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
   }
   
   @batchSize(1)
-  resource seqDeployments 'deployments' = [
+  resource seqDeployments 'deployments@2025-10-01-preview' = [
     for dep in (deployments??[]): {
       name: dep.name
       properties: {
@@ -107,7 +107,7 @@ resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
     }
   ]
 
-  resource project 'projects' = {
+  resource project 'projects@2025-10-01-preview' = {
     name: aiFoundryProjectName
     location: location
     identity: {
@@ -130,12 +130,15 @@ resource aiAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
       // if no BYO Net is provided
       enablePublicHostingEnvironment: true
     }
+    dependsOn: [
+      project
+    ]
   }
 }
 
 
 // Create connection towards appinsights
-resource appInsightConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = {
+resource appInsightConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = {
   parent: aiAccount::project
   name: 'appi-connection'
   properties: {
